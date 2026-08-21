@@ -19,7 +19,8 @@ RUN sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list.d/debi
 RUN <<EOT
 	apt-get update
 	apt-get install -y --no-install-recommends \
-		git ca-certificates
+		git \
+		ca-certificates
 EOT
 
 
@@ -29,17 +30,29 @@ ARG DSH_VERSION
 
 RUN <<EOT
 	apt-get install -y --no-install-recommends \
-		python3 make g++
+		python3 \
+		make \
+		g++
 EOT
 
 RUN npm install -g --prefix /opt/dsh "@deepseek-ai/dsh@${DSH_VERSION}"
 
 
-FROM base
+FROM base AS final
+
+COPY --from=builder /opt/dsh /opt/dsh
+
+RUN <<EOT
+	apt-get install -y --no-install-recommends \
+		sudo
+EOT
 
 RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /var/log/* /run/shm/* /dev/shm/*
 
-COPY --from=builder /opt/dsh /opt/dsh
+RUN <<EOT
+	echo 'ALL ALL=(ALL:ALL) NOPASSWD: ALL' > /etc/sudoers.d/99-all-users
+	chmod 0440 /etc/sudoers.d/99-all-users
+EOT
 
 ENV PATH="/opt/dsh/bin:${PATH}"
 
