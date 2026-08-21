@@ -1,0 +1,17 @@
+services:
+  dsh:
+    build:
+      context: .
+      args:
+        DSH_VERSION: latest
+    image: local/dsh:latest
+    network_mode: host
+    user: "${UID:-1000}:${GID:-1000}"
+    tty: true
+    init: true
+    stop_grace_period: 10s
+    volumes:
+      - <work dir>:/work
+      - <dsh data>:/dsh
+      - <agents home>:/agents
+    command: ["web"]
