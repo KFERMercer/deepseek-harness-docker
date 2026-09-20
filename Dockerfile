@@ -2,7 +2,6 @@
 #
 # deepseek-harness (dsh) - DeepSeek agent harness, Web UI
 # Official image-less deployment: installs the published @deepseek-ai/dsh npm package.
-# Requires: Linux kernel with Landlock >= 5.13 (optional; falls back when unavailable)
 #
 # Build: `docker build -t dsh .`
 # Run: `docker run -it --rm --network host -u $(id -u):$(id -g) -v ./:/work -v <dsh data>:/dsh -v <agents home>:/agents dsh web`
