@@ -1,17 +1,25 @@
 services:
   dsh:
-    build:
-      context: .
-      args:
-        DSH_VERSION: latest
-    image: local/dsh:latest
+    image: dsh:latest
     network_mode: host
     user: "${UID:-1000}:${GID:-1000}"
     tty: true
     init: true
-    stop_grace_period: 10s
+    # environment:
+    #   GITHUB_TOKEN: ghxxx
     volumes:
       - <work dir>:/work
       - <dsh data>:/dsh
       - <agents home>:/agents
-    command: ["web"]
+      # - <share dir>:/share
+      # - ~/.config/gh/hosts.yml:/home/node/.config/gh/hosts.yml:ro
+    tmpfs:
+      - /var/cache:mode=0755
+      - /var/log:mode=0755,size=512M
+      - /mnt:mode=0755,size=5M
+      # - /var/lib/apt/lists:mode=0755,size=1G
+      # - /home/node/.cache:mode=1777
+      # - /home/node/.npm:mode=1777
+    command: ["web", "--no-open"]
+    stop_grace_period: 10s
+    restart: no
