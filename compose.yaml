@@ -8,6 +8,8 @@ services:
     # environment:
     #   GITHUB_TOKEN: ghxxx
     volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
       - <work dir>:/work
       - <dsh data>:/dsh
       - <agents home>:/agents
