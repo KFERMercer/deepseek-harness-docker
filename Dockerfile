@@ -42,8 +42,6 @@ FROM base AS final
 
 ARG PNPM_VERSION
 
-COPY --from=builder /opt/dsh /opt/dsh
-
 RUN <<EOT
 	npm install -g --cache /tmp/npm-cache "pnpm@${PNPM_VERSION}"
 	rm -rf /tmp/npm-cache /tmp/* /var/tmp/* /var/log/* /run/shm/* /dev/shm/*
@@ -83,6 +81,8 @@ RUN <<EOT
 	ln -s /dsh /root/.dsh
 	ln -s /dsh /home/node/.dsh
 EOT
+
+COPY --from=builder /opt/dsh /opt/dsh
 
 ENV PATH="/opt/dsh/bin:${PATH}"
 
