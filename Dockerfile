@@ -10,9 +10,9 @@ ARG PNPM_VERSION=latest # or something like `12.5.1`
 
 FROM node:slim AS base
 
-ARG DEBIAN_FRONTEND=noninteractive
-
 RUN sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list.d/debian.sources
+
+ARG DEBIAN_FRONTEND=noninteractive
 
 RUN <<EOT
 	apt-get update
@@ -24,8 +24,6 @@ EOT
 
 FROM base AS builder
 
-ARG DSH_VERSION
-
 RUN <<EOT
 	apt-get install -y --no-install-recommends \
 		python3 \
@@ -33,19 +31,14 @@ RUN <<EOT
 		g++
 EOT
 
+ARG DSH_VERSION
+
 RUN <<EOT
 	npm install -g --prefix /opt/dsh "@deepseek-ai/dsh@${DSH_VERSION}"
 EOT
 
 
 FROM base AS final
-
-ARG PNPM_VERSION
-
-RUN <<EOT
-	npm install -g --cache /tmp/npm-cache "pnpm@${PNPM_VERSION}"
-	rm -rf /tmp/npm-cache /tmp/* /var/tmp/* /var/log/* /run/shm/* /dev/shm/*
-EOT
 
 # # Add the official GitHub CLI Debian repo
 # ADD --chmod=0644 https://cli.github.com/packages/githubcli-archive-keyring.gpg \
@@ -80,6 +73,13 @@ RUN <<EOT
 	ln -s /agents /home/node/.agents
 	ln -s /dsh /root/.dsh
 	ln -s /dsh /home/node/.dsh
+EOT
+
+ARG PNPM_VERSION
+
+RUN <<EOT
+	npm install -g --cache /tmp/npm-cache "pnpm@${PNPM_VERSION}"
+	rm -rf /tmp/npm-cache /tmp/* /var/tmp/* /var/log/* /run/shm/* /dev/shm/*
 EOT
 
 COPY --from=builder /opt/dsh /opt/dsh
