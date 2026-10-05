@@ -61,18 +61,19 @@ RUN <<EOT
 EOT
 
 RUN <<EOT
-	echo 'ALL ALL=(ALL:ALL) NOPASSWD: ALL' > /etc/sudoers.d/99-all-users
-	chmod 0440 /etc/sudoers.d/99-all-users
+	echo 'ALL ALL=(ALL:ALL) NOPASSWD: ALL' | install -m 0440 /dev/stdin /etc/sudoers.d/99-all-users
 EOT
 
 RUN <<EOT
-	mkdir -p -m 1777 /work /agents /dsh
-	ln -s /work /root/work
-	ln -s /work /home/node/work
-	ln -s /agents /root/.agents
+	install -d -m 1777 /agents /dsh /work
 	ln -s /agents /home/node/.agents
-	ln -s /dsh /root/.dsh
 	ln -s /dsh /home/node/.dsh
+	ln -s /work /home/node/work
+	install -d -o node -g node /home/node/.config
+	install -d -o node -g node /home/node/.local/bin
+	install -d -o node -g node /home/node/.local/lib
+	install -d -o node -g node /home/node/.local/share
+	install -d -o node -g node /home/node/.local/state
 EOT
 
 ARG PNPM_VERSION
