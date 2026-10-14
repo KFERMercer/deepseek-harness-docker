@@ -31,14 +31,14 @@ RUN npm install -g --prefix /opt/dsh "@deepseek-ai/dsh@${DSH_VERSION}"
 
 FROM base AS final
 
-# # Add the official GitHub CLI Debian repo
-# ADD --chmod=0644 https://cli.github.com/packages/githubcli-archive-keyring.gpg \
-# 	/etc/apt/keyrings/githubcli-archive-keyring.gpg
-# RUN <<EOT
-# 	echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" \
-# 		| install -m 0644 /dev/stdin /etc/apt/sources.list.d/github-cli.list
-# 	apt-get update
-# EOT
+# Add the official GitHub CLI Debian repo
+ADD --chmod=0644 https://cli.github.com/packages/githubcli-archive-keyring.gpg \
+	/etc/apt/keyrings/githubcli-archive-keyring.gpg
+RUN <<EOT
+	echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" \
+		| install -m 0644 /dev/stdin /etc/apt/sources.list.d/github-cli.list
+	apt-get update
+EOT
 
 RUN apt-get install -y --no-install-recommends bash-completion bubblewrap curl file gh sudo tzdata wget
 
