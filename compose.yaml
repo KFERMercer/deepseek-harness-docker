@@ -4,7 +4,7 @@ services:
     network_mode: host
     user: "${UID:-1000}:${GID:-1000}"
     tty: true
-    init: true
+    # init: true
     # environment:
     #   GITHUB_TOKEN: ghxxx
     # devices:
@@ -16,16 +16,17 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
       # - ~/.config/gh/hosts.yml:/home/node/.config/gh/hosts.yml:ro
+      # - ~/.config/uv/uv.toml:/home/node/.config/uv/uv.toml:ro
     tmpfs:
       - /mnt:mode=0755,size=5M
       - /run:size=1G
       - /tmp:exec
-      - /var/cache:mode=0755
+      - /var/cache:exec,mode=0755
       - /var/log:mode=0755,size=512M
       - /var/tmp:exec
       # - /var/lib/apt/lists:mode=0755,size=10G
-      # - /home/node/.cache:uid=1000,gid=1000
-      # - /home/node/.npm:uid=1000,gid=1000
+      # - /home/node/.cache:exec,uid=1000,gid=1000
+      # - /home/node/.npm:exec,uid=1000,gid=1000
     command: ["web", "--no-open"]
     stop_grace_period: 10s
     restart: no
